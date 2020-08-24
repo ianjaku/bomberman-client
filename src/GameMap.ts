@@ -1,3 +1,4 @@
+import { GameData } from "./types"
 
 class GameMap {
 
@@ -11,7 +12,7 @@ class GameMap {
     this.height = height
   }
 
-  public render(context: CanvasRenderingContext2D) {
+  public render({ context }: GameData) {
     const tileSize = 64
     
     const tileCountX = Math.ceil(this.width / tileSize)

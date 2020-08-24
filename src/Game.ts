@@ -1,40 +1,47 @@
 import ImageUtils from "./ImageUtils"
 import GameMap from "./GameMap"
 import GameLoop from "./GameLoop"
+import { GameData } from "./types"
+import Player from "./Player"
+import KeyListener from "./KeyListener"
 
 class Game {
 
-  private context: CanvasRenderingContext2D
-  private width: number
-  private height: number
-
+  private canvasEl: HTMLCanvasElement
+  private gameData: GameData
   private map: GameMap
-  private charImage: HTMLImageElement
-  private charX = 0
-  private charY = 0
+  private player: Player
 
-  constructor(context: CanvasRenderingContext2D, width: number, height: number) {
-    this.context = context
-    this.width = width
-    this.height = height
+  constructor(canvasEl: HTMLCanvasElement) {
+    this.canvasEl = canvasEl
+    this.gameData = {
+      context: canvasEl.getContext("2d"),
+      screenWidth: canvasEl.width,
+      screenHeight: canvasEl.height,
+      keyListener: new KeyListener()
+    }
   }
 
   public async run() {
-    const img = await ImageUtils.loadImageFromUrl("http://localhost:4000/static/bg.png")
-    this.map = new GameMap(img, this.width, this.height)
-
-    this.charImage = await ImageUtils.loadImageFromUrl("http://localhost:4000/static/player_f00.png")
-
+    await this.setup()
+    
     const gameLoop = new GameLoop(this.loop.bind(this))
     gameLoop.run()
   }
 
-  private loop(delta: number) {
-    this.map.render(this.context)
+  private async setup() {
+    this.gameData.keyListener.setup()
+    
+    const img = await ImageUtils.loadImageFromUrl("http://localhost:4000/static/bg.png")
+    this.map = new GameMap(img, this.gameData.screenWidth, this.gameData.screenHeight)
 
-    this.charX += 30 * delta
-    this.charY += 30 * delta
-    this.context.drawImage(this.charImage, this.charX, this.charY)
+    this.player = new Player()
+    await this.player.setup()
+  }
+
+  private loop(delta: number) {
+    this.map.render(this.gameData)
+    this.player.render(this.gameData, delta)
   }
 
 }
