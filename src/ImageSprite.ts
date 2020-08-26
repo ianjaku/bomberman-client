@@ -1,6 +1,6 @@
-import { GameData } from "./types"
+import { GameData, Sprite } from "./types"
 
-class Sprite {
+class ImageSprite implements Sprite {
 
   private image: HTMLImageElement
   private flippedX: boolean
@@ -10,7 +10,7 @@ class Sprite {
     this.flippedX = flippedX
   }
 
-  public render({ context }: GameData, x: number, y: number, width: number, height: number) {
+  public render({ context }: GameData, delta: number, x: number, y: number, width: number, height: number) {
     let renderedX = x
     
     if (this.flippedX) {
@@ -28,4 +28,4 @@ class Sprite {
   
 }
 
-export default Sprite
+export default ImageSprite

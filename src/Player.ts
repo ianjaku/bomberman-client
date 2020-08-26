@@ -1,6 +1,10 @@
-import { GameData } from "./types"
+import { GameData, Sprite } from "./types"
 import ImageUtils from "./ImageUtils"
-import Sprite from "./Sprite"
+import ImageSprite from "./ImageSprite"
+import SpriteSheet from "./SpriteSheet"
+import SpriteSheetSprite from "./SpriteSheetSprite"
+import Animation from "./Animation"
+import Range from "./Range"
 
 class Player {
 
@@ -17,19 +21,15 @@ class Player {
 
   public async setup() {
 
-    const imagePromises = [
-      await ImageUtils.loadImageFromUrl("http://localhost:4000/static/player_f00.png"),
-      await ImageUtils.loadImageFromUrl("http://localhost:4000/static/player_b00.png"),
-      await ImageUtils.loadImageFromUrl("http://localhost:4000/static/player_r00.png")
-    ]
-
-    const [imageF, imageB, imageR] = await Promise.all(imagePromises)
+    const spriteSheetImage = await ImageUtils.loadImageFromUrl("http://localhost:4000/static/player_spritesheet.png")
+    const spriteSheet = new SpriteSheet(spriteSheetImage, 64, 128)
 
     this.sprites = {
-      forward: new Sprite(imageF),
-      backward: new Sprite(imageB),
-      right: new Sprite(imageR),
-      left: new Sprite(imageR, { flippedX: true }),
+      idle: new SpriteSheetSprite(spriteSheet, 0, 0),
+      forward: new Animation(spriteSheet, Range.rowRange(0, 8), 100),
+      backward: new Animation(spriteSheet, Range.rowRange(1, 8), 100),
+      right: new Animation(spriteSheet, Range.rowRange(2, 8), 100),
+      left: new Animation(spriteSheet, Range.rowRange(2, 8), 100, { flippedX: true })
     }
     
     this.width = 64
@@ -57,10 +57,11 @@ class Player {
     this.xPos += this.velX
     this.yPos += this.velY
 
-    this.getMovingSprite().render(gameData, this.xPos, this.yPos, this.width, this.height)
+    this.getMovingSprite().render(gameData, delta, this.xPos, this.yPos, this.width, this.height)
   }
 
   private getMovingSprite() {
+    if (this.velX === 0 && this.velY === 0) return this.sprites["idle"]
     if (this.velX > 0) return this.sprites["right"]
     if (this.velX < 0) return this.sprites["left"]
     if (this.velY < 0) return this.sprites["backward"]

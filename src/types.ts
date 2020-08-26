@@ -6,3 +6,14 @@ export interface GameData {
   screenHeight: number
   keyListener: KeyListener
 }
+
+export interface Sprite {
+  render(
+    gameData: GameData,
+    delta: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ): void;
+}

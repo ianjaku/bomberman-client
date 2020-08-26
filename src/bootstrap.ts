@@ -7,6 +7,8 @@ async function bootstrap() {
     return
   }
 
+  canvasEl.focus()
+
   const game = new Game(canvasEl)
   game.run()
 }

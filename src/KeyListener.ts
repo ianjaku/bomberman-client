@@ -3,12 +3,12 @@ class KeyListener {
 
   private keyStates: {[key: string]: boolean} = {}
 
-  public setup() {
-    document.addEventListener("keydown", e => {
+  public setup(canvasEl: HTMLCanvasElement) {
+    canvasEl.addEventListener("keydown", e => {
       e.preventDefault()
       this.keyStates[e.key] = true
     })
-    document.addEventListener("keyup", e => {
+    canvasEl.addEventListener("keyup", e => {
       e.preventDefault()
       this.keyStates[e.key] = false
     })
