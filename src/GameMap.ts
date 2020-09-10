@@ -1,15 +1,21 @@
-import { GameData } from "./types"
+import { GameData } from "./engine/types"
+import Entity from "./engine/Entity"
+import ImageUtils from "./engine/ImageUtils"
 
-class GameMap {
+class GameMap extends Entity {
 
   private tileImage: HTMLImageElement
   private width: number
   private height: number
 
-  constructor(tileImage: HTMLImageElement, width: number, height: number) {
-    this.tileImage = tileImage
-    this.width = width
-    this.height = height
+  constructor() {
+    super()
+  }
+
+  public async setup(gameData: GameData) {
+    this.tileImage = await ImageUtils.loadImageFromUrl("http://localhost:4000/static/bg.png")
+    this.width = gameData.screenWidth
+    this.height = gameData.screenHeight
   }
 
   public render({ context }: GameData) {

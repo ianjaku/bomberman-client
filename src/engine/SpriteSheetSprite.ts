@@ -1,7 +1,8 @@
 import SpriteSheet from "./SpriteSheet"
-import { Sprite, GameData } from "./types"
+import { GameData } from "./types"
+import Sprite from "./Sprite"
 
-class SpriteSheetSprite implements Sprite {
+class SpriteSheetSprite extends Sprite {
 
   private spriteSheet: SpriteSheet
   private xCount: number
@@ -14,13 +15,14 @@ class SpriteSheetSprite implements Sprite {
     yCount: number,
     { flippedX = false}: { flippedX?: boolean } = {}
   ) {
+    super()
     this.spriteSheet = spriteSheet
     this.xCount = xCount
     this.yCount = yCount
     this.flippedX = flippedX
   }
 
-  render(gameData: GameData, delta: number, x: number, y: number, width: number, height: number): void {
+  render(gameData: GameData, x: number, y: number, width: number, height: number): void {
     this.spriteSheet.render(
       gameData,
       this.xCount,

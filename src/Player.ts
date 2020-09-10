@@ -1,12 +1,14 @@
-import { GameData, Sprite } from "./types"
-import ImageUtils from "./ImageUtils"
-import ImageSprite from "./ImageSprite"
-import SpriteSheet from "./SpriteSheet"
-import SpriteSheetSprite from "./SpriteSheetSprite"
-import Animation from "./Animation"
-import Range from "./Range"
+import { GameData } from "./engine/types"
+import Sprite from "./engine/Sprite"
+import ImageUtils from "./engine/ImageUtils"
+import ImageSprite from "./engine/ImageSprite"
+import SpriteSheet from "./engine/SpriteSheet"
+import SpriteSheetSprite from "./engine/SpriteSheetSprite"
+import Animation from "./engine/Animation"
+import Range from "./engine/Range"
+import Entity from "./engine/Entity"
 
-class Player {
+class Player extends Entity {
 
   private sprites: {[direction: string]: Sprite} = {}
 
@@ -19,7 +21,7 @@ class Player {
   private velX = 0
   private velY = 0
 
-  public async setup() {
+  public async setup(gameData: GameData) {
 
     const spriteSheetImage = await ImageUtils.loadImageFromUrl("http://localhost:4000/static/player_spritesheet.png")
     const spriteSheet = new SpriteSheet(spriteSheetImage, 64, 128)
@@ -36,7 +38,7 @@ class Player {
     this.height = 128
   }
 
-  public render(gameData: GameData, delta: number) {
+  public update(gameData: GameData, delta: number) {
     const { keyListener } = gameData
 
     this.velX = 0
@@ -57,7 +59,11 @@ class Player {
     this.xPos += this.velX
     this.yPos += this.velY
 
-    this.getMovingSprite().render(gameData, delta, this.xPos, this.yPos, this.width, this.height)
+    this.getMovingSprite().update(gameData, delta)
+  }
+
+  public render(gameData: GameData) {
+    this.getMovingSprite().render(gameData, this.xPos, this.yPos, this.width, this.height)
   }
 
   private getMovingSprite() {
