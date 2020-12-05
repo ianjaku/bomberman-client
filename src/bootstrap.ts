@@ -1,4 +1,4 @@
-import BomermanGame from "./BomermanGame"
+import BomermanGame from "./BombermanGame"
 
 async function bootstrap() {
   const canvasEl = document.getElementById("game-canvas") as HTMLCanvasElement | undefined

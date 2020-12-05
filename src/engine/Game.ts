@@ -3,6 +3,8 @@ import GameLoop from "./GameLoop"
 import { GameData } from "./types"
 import KeyListener from "./KeyListener"
 import Entity from "./Entity"
+import CollisionHandler from "./collision/CollisionHandler"
+import Collidable from "./collision/Collidable"
 
 abstract class Game {
 
@@ -16,7 +18,8 @@ abstract class Game {
       context: canvasEl.getContext("2d"),
       screenWidth: canvasEl.width,
       screenHeight: canvasEl.height,
-      keyListener: new KeyListener()
+      keyListener: new KeyListener(),
+      collisionHandler: new CollisionHandler()
     }
   }
 
@@ -36,6 +39,10 @@ abstract class Game {
 
   public addEntity(entity: Entity) {
     this.entities.push(entity)
+
+    if (this.isCollidable(entity)) {
+      this.gameData.collisionHandler.addCollidable(entity);
+    }
   }
 
   protected abstract async setup(gameData: GameData): Promise<void>;
@@ -51,6 +58,10 @@ abstract class Game {
 
   private render() {
     this.entities.forEach(e => e.render(this.gameData))
+  }
+
+  private isCollidable(entity: Entity | Collidable): entity is Collidable {
+    return (entity as Collidable).getCollisionBox !== undefined;
   }
 
 }

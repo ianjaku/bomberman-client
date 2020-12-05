@@ -7,6 +7,7 @@ import SpriteSheetSprite from "./engine/SpriteSheetSprite"
 import Animation from "./engine/Animation"
 import Range from "./engine/Range"
 import Entity from "./engine/Entity"
+import CollisionBox from "./engine/collision/CollisionBox"
 
 class Player extends Entity {
 
@@ -56,6 +57,8 @@ class Player extends Entity {
       this.velY = -(this.speed * delta)
     }
 
+    this.calculateCollision(gameData);
+
     this.xPos += this.velX
     this.yPos += this.velY
 
@@ -64,6 +67,27 @@ class Player extends Entity {
 
   public render(gameData: GameData) {
     this.getMovingSprite().render(gameData, this.xPos, this.yPos, this.width, this.height)
+  }
+
+  private calculateCollision({ collisionHandler }: GameData) {
+    const collisionBox: CollisionBox = {
+      xPos: this.xPos + 10,
+      yPos: this.yPos + 110,
+      width: this.width - 20,
+      height: this.height - 115
+    };
+
+    const collisionsX = collisionHandler.testMovement(collisionBox, this.velX, 0);
+    if (collisionsX.length > 0) {
+      // TODO: move the distance you're still allowed
+      this.velX = 0;
+    }
+
+    const collisionsY = collisionHandler.testMovement(collisionBox, 0, this.velY);
+    if (collisionsY.length > 0) {
+      // TODO: move the distance you're still allowed
+      this.velY = 0;
+    }
   }
 
   private getMovingSprite() {
