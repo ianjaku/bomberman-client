@@ -1,6 +1,7 @@
 import Collidable from "./engine/collision/Collidable";
 import CollisionBox from "./engine/collision/CollisionBox";
 import Entity from "./engine/Entity";
+import { ImageCache } from "./engine/ImageCache";
 import ImageUtils from "./engine/ImageUtils";
 import SpriteSheet from "./engine/SpriteSheet";
 import { GameData } from "./engine/types";
@@ -8,8 +9,8 @@ import { GameData } from "./engine/types";
 class TestBrick extends Entity implements Collidable {
   private sheet: SpriteSheet;
 
-  public async setup(gameData: GameData) {
-    const img = await ImageUtils.loadImageFromUrl("http://localhost:4000/static/blocks.png")
+  public setup(imageCache: ImageCache) {
+    const img = imageCache.getPreloaded("blocks")
     this.sheet = new SpriteSheet(img, 64, 64)
   }
 

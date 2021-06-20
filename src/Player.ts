@@ -8,6 +8,8 @@ import Animation from "./engine/Animation"
 import Range from "./engine/Range"
 import Entity from "./engine/Entity"
 import CollisionBox from "./engine/collision/CollisionBox"
+import { Bomb } from "./Bomb"
+import { ImageCache } from "./engine/ImageCache"
 
 class Player extends Entity {
 
@@ -22,9 +24,8 @@ class Player extends Entity {
   private velX = 0
   private velY = 0
 
-  public async setup(gameData: GameData) {
-
-    const spriteSheetImage = await ImageUtils.loadImageFromUrl("http://localhost:4000/static/player_spritesheet.png")
+  public setup(imageCache: ImageCache) {
+    const spriteSheetImage = imageCache.getPreloaded("player")
     const spriteSheet = new SpriteSheet(spriteSheetImage, 64, 128)
 
     this.sprites = {
@@ -42,6 +43,7 @@ class Player extends Entity {
   public update(gameData: GameData, delta: number) {
     const { keyListener } = gameData
 
+
     this.velX = 0
     this.velY = 0
 
@@ -55,6 +57,11 @@ class Player extends Entity {
       this.velY = this.speed * delta
     } else if (keyListener.isAnyKeyDown(["z", "w", "ArrowUp"])) {
       this.velY = -(this.speed * delta)
+    }
+
+    if (keyListener.isKeyDown(" ")) {
+      const bomb = new Bomb();
+      gameData.entityManager.addEntity(bomb);
     }
 
     this.calculateCollision(gameData);

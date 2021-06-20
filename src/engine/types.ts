@@ -1,4 +1,6 @@
 import CollisionHandler from "./collision/CollisionHandler";
+import { EntityManager } from "./EntityManager";
+import { ImageCache } from "./ImageCache";
 import KeyListener from "./KeyListener";
 
 export interface GameData {
@@ -7,4 +9,6 @@ export interface GameData {
   screenHeight: number;
   keyListener: KeyListener;
   collisionHandler: CollisionHandler;
+  entityManager: EntityManager;
+  imageCache: ImageCache;
 }
