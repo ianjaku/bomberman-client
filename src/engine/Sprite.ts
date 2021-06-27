@@ -1,3 +1,4 @@
+import { IRenderImageOptions } from "./IRenderImageOptions";
 import { GameData } from "./types";
 
 abstract class Sprite {
@@ -9,7 +10,8 @@ abstract class Sprite {
     x: number,
     y: number,
     width: number,
-    height: number
+    height: number,
+    renderOptions?: IRenderImageOptions
   ): void;
 
 }

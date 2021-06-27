@@ -1,3 +1,4 @@
+import { IRenderImageOptions } from "./IRenderImageOptions"
 import { GameData } from "./types"
 
 class SpriteSheet {
@@ -20,7 +21,7 @@ class SpriteSheet {
     y: number,
     width: number,
     height: number,
-    { flippedX = false }: { flippedX?: boolean } = {}
+    { flippedX = false, opacity }: IRenderImageOptions = {}
   ) {
     let renderedX = x
     
@@ -28,6 +29,10 @@ class SpriteSheet {
       context.save()
       context.scale(-1, 1)
       renderedX = -(x + width)
+    }
+
+    if (opacity != null) {
+      context.globalAlpha = opacity
     }
 
     context.drawImage(
@@ -41,6 +46,10 @@ class SpriteSheet {
       width,
       height
     )
+
+    if (opacity != null) {
+      context.globalAlpha = 1
+    }
 
     if (flippedX) {
       context.restore()

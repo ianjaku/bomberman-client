@@ -21,4 +21,8 @@ export class EntityManager {
     return this.entities
   }
 
+  public removeEntity(entity: Entity) {
+    this.entities = this.entities.filter(e => e.id !== entity.id)
+  }
+
 }

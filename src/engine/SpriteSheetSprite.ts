@@ -1,6 +1,7 @@
 import SpriteSheet from "./SpriteSheet"
 import { GameData } from "./types"
 import Sprite from "./Sprite"
+import { IRenderImageOptions } from "./IRenderImageOptions"
 
 class SpriteSheetSprite extends Sprite {
 
@@ -22,7 +23,14 @@ class SpriteSheetSprite extends Sprite {
     this.flippedX = flippedX
   }
 
-  render(gameData: GameData, x: number, y: number, width: number, height: number): void {
+  render(
+    gameData: GameData,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    renderOptions?: IRenderImageOptions
+  ): void {
     this.spriteSheet.render(
       gameData,
       this.xCount,
@@ -31,7 +39,7 @@ class SpriteSheetSprite extends Sprite {
       y,
       width,
       height,
-      { flippedX: this.flippedX }
+      Object.assign({ flippedX: this.flippedX }, renderOptions || {})
     )
   }
   

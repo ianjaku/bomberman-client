@@ -4,6 +4,11 @@ import { GameData } from "./types";
 abstract class Entity {
 
   public hasBeenSetup: boolean = false;
+  public readonly id: Symbol;
+
+  constructor() {
+    this.id = Symbol()
+  }
 
   public async runSetup(imageCache: ImageCache): Promise<void> {
     this.hasBeenSetup = true;

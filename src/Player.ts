@@ -24,6 +24,9 @@ class Player extends Entity {
   private velX = 0
   private velY = 0
 
+  private bombCooldownMS: number = 1000
+  private currBombCooldownMS: number = 0
+
   public setup(imageCache: ImageCache) {
     const spriteSheetImage = imageCache.getPreloaded("player")
     const spriteSheet = new SpriteSheet(spriteSheetImage, 64, 128)
@@ -41,35 +44,9 @@ class Player extends Entity {
   }
 
   public update(gameData: GameData, delta: number) {
-    const { keyListener } = gameData
-
-
-    this.velX = 0
-    this.velY = 0
-
-    if (keyListener.isAnyKeyDown(["d", "ArrowRight"])) {
-      this.velX = this.speed * delta
-    } else if (keyListener.isAnyKeyDown(["q", "a", "ArrowLeft"])) {
-      this.velX = -(this.speed * delta)
-    }
-    
-    if (keyListener.isAnyKeyDown(["s", "ArrowDown"])) {
-      this.velY = this.speed * delta
-    } else if (keyListener.isAnyKeyDown(["z", "w", "ArrowUp"])) {
-      this.velY = -(this.speed * delta)
-    }
-
-    if (keyListener.isKeyDown(" ")) {
-      const bomb = new Bomb();
-      gameData.entityManager.addEntity(bomb);
-    }
-
-    this.calculateCollision(gameData);
-
-    this.xPos += this.velX
-    this.yPos += this.velY
-
+    this.updatePosition(gameData, delta)
     this.getMovingSprite().update(gameData, delta)
+    this.updateBombs(gameData, delta)
   }
 
   public render(gameData: GameData) {
@@ -104,7 +81,42 @@ class Player extends Entity {
     if (this.velY < 0) return this.sprites["backward"]
     return this.sprites["forward"]
   }
-  
+
+  private updatePosition(gameData: GameData, delta: number) {
+    const { keyListener } = gameData
+
+    this.velX = 0
+    this.velY = 0
+
+    if (keyListener.isAnyKeyDown(["d", "ArrowRight"])) {
+      this.velX = this.speed * delta
+    } else if (keyListener.isAnyKeyDown(["q", "a", "ArrowLeft"])) {
+      this.velX = -(this.speed * delta)
+    }
+    
+    if (keyListener.isAnyKeyDown(["s", "ArrowDown"])) {
+      this.velY = this.speed * delta
+    } else if (keyListener.isAnyKeyDown(["z", "w", "ArrowUp"])) {
+      this.velY = -(this.speed * delta)
+    }
+
+    this.calculateCollision(gameData);
+
+    this.xPos += this.velX
+    this.yPos += this.velY
+  }
+
+  private updateBombs(gameData: GameData, delta: number) {
+    if (this.currBombCooldownMS > 0) {
+      this.currBombCooldownMS -= delta * 1000
+    }
+
+    if (gameData.keyListener.isKeyDown(" ") && this.currBombCooldownMS <= 0) {
+      const bomb = new Bomb(this.xPos + (this.width / 2) - 24, this.yPos + this.height - 48)
+      gameData.entityManager.addEntity(bomb)
+      this.currBombCooldownMS = this.bombCooldownMS
+    }
+  }
 }
 
 export default Player

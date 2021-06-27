@@ -8,7 +8,24 @@ import { GameData } from "./engine/types";
 
 export class Bomb extends Entity {
 
-  private sprite: Sprite;
+  private sprite: Sprite
+
+  private xPos: number
+  private yPos: number
+
+  private timeBeforeExplosionMS: number
+
+  private blinkTimeMS: number = 300
+  private currBlinkTimeMS: number
+  private minBlinkOpacity = 0.5
+
+  constructor(xPos: number, yPos: number) {
+    super()
+    this.xPos = xPos
+    this.yPos = yPos
+    this.timeBeforeExplosionMS = 3000
+    this.currBlinkTimeMS = this.blinkTimeMS
+  }
 
   public setup(imageCache: ImageCache) {
     const sheetImage = imageCache.getPreloaded("bomb")
@@ -16,8 +33,25 @@ export class Bomb extends Entity {
     this.sprite = new SpriteSheetSprite(sheet, 0, 0) 
   }
 
+  public update(gameData: GameData, delta: number) {
+    this.timeBeforeExplosionMS -= delta * 1000
+
+    if (this.timeBeforeExplosionMS <= 0) {
+      gameData.entityManager.removeEntity(this)
+    }
+
+    this.currBlinkTimeMS -= delta * 1000
+    if (this.currBlinkTimeMS <= -this.blinkTimeMS) {
+      this.currBlinkTimeMS = this.blinkTimeMS
+    }
+  }
+
   public render(gameData: GameData): void {
-    this.sprite.render(gameData, 100, 100, 48, 48)
+    const opacityVariance = 1 - this.minBlinkOpacity
+    const opacityValue = (Math.abs(this.currBlinkTimeMS) / this.blinkTimeMS) * opacityVariance
+    const opacity = this.minBlinkOpacity + opacityValue
+    
+    this.sprite.render(gameData, this.xPos, this.yPos, 48, 48, { opacity })
   }
 
 }
